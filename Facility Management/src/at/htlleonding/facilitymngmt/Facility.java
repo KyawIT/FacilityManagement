@@ -1,5 +1,7 @@
 package at.htlleonding.facilitymngmt;
 
+import java.util.Objects;
+
 public abstract class Facility implements Comparable<Facility> {
     private City city;
     private String name, street;
@@ -26,4 +28,5 @@ public abstract class Facility implements Comparable<Facility> {
     public int getHouseNumber() {
         return houseNumber;
     }
+
 }
