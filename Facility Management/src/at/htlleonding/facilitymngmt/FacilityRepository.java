@@ -6,19 +6,18 @@ import java.nio.file.Files;
 import java.nio.file.NoSuchFileException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class FacilityRepository {
     private Map<Integer, City> cities;
     List<Facility> facilityList;
     private static FacilityRepository facilityRepository;
-    FacilityRepository(){
+
+    FacilityRepository() {
         facilityList = new ArrayList<>();
         cities = new TreeMap<>();
     }
+
     public static FacilityRepository getInstance() {
         if (facilityRepository == null)
             facilityRepository = new FacilityRepository();
@@ -28,7 +27,7 @@ public class FacilityRepository {
 
     public List<Facility> getFacilitiesByZipCode(int postalCode) {
         List<Facility> res = new ArrayList<>();
-        for (Facility facility: facilityList) {
+        for (Facility facility : facilityList) {
             if (facility.getCity().getZipCode() == postalCode)
                 res.add(facility);
         }
@@ -61,15 +60,23 @@ public class FacilityRepository {
     }
 
     public int readFromFile(String fileName, FacilityFactory facilityFactory) {
-        Path path = Paths.get(fileName);
+        int errCnt = 0;
         try {
-            if (!Files.exists(path)) {
-                throw new NoSuchFileException(fileName);
+            Path path = Paths.get(fileName);
+            String[] lines = Files.readAllLines(path).toArray(new String[0]);
+
+            for (int i = 1; i < lines.length; i++) {
+                Facility facility = facilityFactory.createFromString(lines[i]);
+                if (facility != null)
+                    addFacility(facility);
+                else
+                    errCnt++;
             }
         } catch (IOException e) {
-            throw new FacilityManagementException(FacilityManagementException.IO_EXCEPTION_MESSAGE);
+            throw new FacilityManagementException(FacilityManagementException.IO_EXCEPTION_MESSAGE, e);
         }
-        return 0;
+
+        return errCnt;
     }
 
     public List<Facility> getFacilitiesByPredicate(Object religion) {

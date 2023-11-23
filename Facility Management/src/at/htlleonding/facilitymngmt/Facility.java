@@ -28,5 +28,4 @@ public abstract class Facility implements Comparable<Facility> {
     public int getHouseNumber() {
         return houseNumber;
     }
-
 }

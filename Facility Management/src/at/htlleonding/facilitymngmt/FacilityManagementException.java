@@ -10,4 +10,8 @@ public class FacilityManagementException extends RuntimeException {
     public FacilityManagementException(String message) {
         super(message);
     }
+
+    public FacilityManagementException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }
